@@ -34,7 +34,8 @@
                     type="password"
                     placeholder="password"
                     required
-                  ></v-text-field>
+                  >
+                  </v-text-field>
 
                   <v-text-field
                     v-if="registerMode"
@@ -99,6 +100,10 @@ export default {
     return {
       email: "",
       password: "",
+      has_minimum_lenth: false,
+      has_number: false,
+      has_lowercsae: false,
+      has_uppercase: false,
       confirmPassword: "",
       registerMode: false,
       errorMessage: "",
@@ -121,8 +126,6 @@ export default {
           this.$router.replace("/dashboard");
         })
         .catch((error) => {
-          console.log(error.code);
-
           switch (error.code) {
             case "auth/invalid-email":
               this.errorMessage = "Invalid email";
@@ -138,33 +141,28 @@ export default {
     },
     register() {
       if (this.validateEmail()) {
-        if (this.password == this.confirmPassword) {
-          createUserWithEmailAndPassword(auth, this.email, this.password)
-            .then(() => {
-              console.log("Syccesfully registered!");
-              console.log(auth.currentUser);
-              this.$router.replace("/dashboard");
-              this.registerMode = false;
-              this.errorMessage = "";
-              this.$refs.form.reset();
-            })
-            .catch((error) => {
-              console.log(error.code);
-              switch (error.code) {
-                case "auth/email-already-in-use":
-                  this.errorMessage = "Email already in use";
-                  break;
-                case "auth/weak-password":
-                  this.errorMessage =
-                    "Password should contain at least 6 characters";
-                  break;
-                default:
-                  this.errorMessage = "Something go wrong";
-                  break;
-              }
-            });
-        } else {
-          this.errorMessage = "password did not match";
+        if (this.validatePassword()) {
+          if (this.password == this.confirmPassword) {
+            createUserWithEmailAndPassword(auth, this.email, this.password)
+              .then(() => {
+                this.$router.replace("/dashboard");
+                this.registerMode = false;
+                this.errorMessage = "";
+                this.$refs.form.reset();
+              })
+              .catch((error) => {
+                switch (error.code) {
+                  case "auth/email-already-in-use":
+                    this.errorMessage = "Email already in use";
+                    break;
+                  default:
+                    this.errorMessage = "Something go wrong";
+                    break;
+                }
+              });
+          } else {
+            this.errorMessage = "password did not match";
+          }
         }
       } else {
         this.errorMessage = "Invalid email";
@@ -174,6 +172,23 @@ export default {
       const blueprint =
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return blueprint.test(this.email);
+    },
+    validatePassword() {
+      if (this.password.length < 8) {
+        this.errorMessage = "password should containt at least 8 characters";
+        return false;
+      } else if (!/\d/.test(this.password)) {
+        this.errorMessage = "password should containt at least 1 number";
+        return false;
+      } else if (!/[a-z]/.test(this.password)) {
+        this.errorMessage = "password should containt at least 1 lowercase";
+        return false;
+      } else if (!/[A-Z]/.test(this.password)) {
+        this.errorMessage = "password should containt at lease 1 uppercase";
+        return false;
+      } else {
+        return true;
+      }
     },
   },
   computed: {
