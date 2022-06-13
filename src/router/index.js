@@ -5,7 +5,8 @@ import Dashboard from "../components/DashboardView.vue";
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
+
   routes: [
     {
       path: "/",
@@ -16,7 +17,10 @@ export default new Router({
       path: "/dashboard",
       name: "dashboard",
       component: Dashboard,
-      props: {},
     },
   ],
 });
+
+
+
+export default router;
