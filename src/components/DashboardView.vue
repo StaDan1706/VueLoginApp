@@ -1,8 +1,8 @@
 <template>
   <v-app>
-    <v-toolbar color="primary" dark fixed app>
+    <v-app-bar color="primary" dark fixed app>
       <v-toolbar-title>Application</v-toolbar-title>
-    </v-toolbar>
+    </v-app-bar>
     <v-navigation-drawer permanent>
       <v-list>
         <v-list-item class="px-2">
@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     logout() {
-      this.$router.replace({ name: "login" });
+      this.$router.replace("/");
     },
   },
 };

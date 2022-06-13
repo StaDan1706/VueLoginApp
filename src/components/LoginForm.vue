@@ -8,7 +8,7 @@
               <v-toolbar dark color="primary">
                 <v-toolbar-title
                   >{{
-                    isRegister ? stateObj.register.name : stateObj.login.name
+                    registerMode ? stateObj.register.name : stateObj.login.name
                   }}
                   form
                 </v-toolbar-title>
@@ -16,7 +16,7 @@
               <v-card-text>
                 <form
                   ref="form"
-                  @submit.prevent="isRegister ? register() : login()"
+                  @submit.prevent="registerMode ? register() : login()"
                 >
                   <v-text-field
                     v-model="email"
@@ -37,7 +37,7 @@
                   ></v-text-field>
 
                   <v-text-field
-                    v-if="isRegister"
+                    v-if="registerMode"
                     v-model="confirmPassword"
                     name="confirmPassword"
                     label="Confirm Password"
@@ -52,12 +52,14 @@
                     color="primary"
                     value="log in"
                     >{{
-                      isRegister ? stateObj.register.name : stateObj.login.name
+                      registerMode
+                        ? stateObj.register.name
+                        : stateObj.login.name
                     }}</v-btn
                   >
                   <div
                     class="grey--text mt-4"
-                    v-on:click="isRegister = !isRegister"
+                    v-on:click="registerMode = !registerMode"
                   >
                     {{ toggleMessage }}
                   </div>
@@ -72,6 +74,25 @@
 </template>
 
 <script>
+import { initializeApp } from "firebase/app";
+const firebaseConfig = {
+  apiKey: "AIzaSyCaJwoD86C7Ye5RhIAmUhbbf6cXLvIIIws",
+  authDomain: "vuelogin-a84f9.firebaseapp.com",
+  projectId: "vuelogin-a84f9",
+  storageBucket: "vuelogin-a84f9.appspot.com",
+  messagingSenderId: "1021585384697",
+  appId: "1:1021585384697:web:4e1ba27e35222731ceee28",
+  measurementId: "G-6QTE54YV55",
+};
+
+initializeApp(firebaseConfig);
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+const auth = getAuth();
+
 export default {
   name: "App",
   data() {
@@ -79,7 +100,7 @@ export default {
       email: "",
       password: "",
       confirmPassword: "",
-      isRegister: false,
+      registerMode: false,
       errorMessage: "",
       stateObj: {
         register: {
@@ -95,25 +116,69 @@ export default {
   },
   methods: {
     login() {
-      const { email } = this;
-      this.$router.replace({
-        name: "dashboard",
-        params: { email: email },
-      });
+      signInWithEmailAndPassword(auth, this.email, this.password)
+        .then(() => {
+          this.$router.replace("/dashboard");
+        })
+        .catch((error) => {
+          console.log(error.code);
+
+          switch (error.code) {
+            case "auth/invalid-email":
+              this.errorMessage = "Invalid email";
+              break;
+            case "auth/wrong-password":
+              this.errorMessage = "Incorrect password";
+              break;
+            default:
+              this.errorMessage = "Email or password was incorrect";
+              break;
+          }
+        });
     },
     register() {
-      if (this.password == this.confirmPassword) {
-        this.isRegister = false;
-        this.errorMessage = "";
-        this.$refs.form.reset();
+      if (this.validateEmail()) {
+        if (this.password == this.confirmPassword) {
+          createUserWithEmailAndPassword(auth, this.email, this.password)
+            .then(() => {
+              console.log("Syccesfully registered!");
+              console.log(auth.currentUser);
+              this.$router.replace("/dashboard");
+              this.registerMode = false;
+              this.errorMessage = "";
+              this.$refs.form.reset();
+            })
+            .catch((error) => {
+              console.log(error.code);
+              switch (error.code) {
+                case "auth/email-already-in-use":
+                  this.errorMessage = "Email already in use";
+                  break;
+                case "auth/weak-password":
+                  this.errorMessage =
+                    "Password should contain at least 6 characters";
+                  break;
+                default:
+                  this.errorMessage = "Something go wrong";
+                  break;
+              }
+            });
+        } else {
+          this.errorMessage = "password did not match";
+        }
       } else {
-        this.errorMessage = "password did not match";
+        this.errorMessage = "Invalid email";
       }
+    },
+    validateEmail() {
+      const blueprint =
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return blueprint.test(this.email);
     },
   },
   computed: {
     toggleMessage: function () {
-      return this.isRegister
+      return this.registerMode
         ? this.stateObj.register.message
         : this.stateObj.login.message;
     },
