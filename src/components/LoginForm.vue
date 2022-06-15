@@ -123,7 +123,10 @@ export default {
     login() {
       signInWithEmailAndPassword(auth, this.email, this.password)
         .then(() => {
-          this.$router.replace("/dashboard");
+          this.$router.replace({
+            name: "dashboard",
+            params: { email: this.email },
+          });
         })
         .catch((error) => {
           switch (error.code) {
@@ -145,7 +148,10 @@ export default {
           if (this.password == this.confirmPassword) {
             createUserWithEmailAndPassword(auth, this.email, this.password)
               .then(() => {
-                this.$router.replace("/dashboard");
+                this.$router.replace({
+                  name: "dashboard",
+                  params: { email: this.email },
+                });
                 this.registerMode = false;
                 this.errorMessage = "";
                 this.$refs.form.reset();
