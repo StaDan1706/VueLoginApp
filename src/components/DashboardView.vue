@@ -5,10 +5,10 @@
     </v-app-bar>
     <v-navigation-drawer permanent>
       <v-list>
-        <v-list-item class="px-2">
+        <v-list-item class="px-2 mt-10">
           <v-list-item-avatar>
             <v-img
-              src="https://randomuser.me/api/portraits/women/85.jpg"
+              src="https://randomuser.me/api/portraits/men/30.jpg"
             ></v-img>
           </v-list-item-avatar>
         </v-list-item>
