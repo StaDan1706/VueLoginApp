@@ -13,18 +13,21 @@
               </v-toolbar-title>
             </v-toolbar>
             <v-card-text>
-              <form
+              <v-form
                 ref="form"
+                v-model="valid"
+                lazy-validation
                 @submit.prevent="registerMode ? register() : login()"
               >
                 <v-text-field
                   v-model="email"
                   name="email"
                   label="Email"
-                  type="text"
                   placeholder="email"
+                  :rules="emailRules"
                   required
-                ></v-text-field>
+                >
+                </v-text-field>
 
                 <v-text-field
                   v-model="password"
@@ -32,7 +35,7 @@
                   label="Password"
                   type="password"
                   placeholder="password"
-                  required
+                  :rules="passwordRules"
                 >
                 </v-text-field>
 
@@ -43,9 +46,12 @@
                   label="Confirm Password"
                   type="password"
                   placeholder="cocnfirm password"
-                  required
-                ></v-text-field>
+                  :rules="confirmPasswordRules.concat(passwordConfirmationRule)"
+                >
+                </v-text-field>
+
                 <div class="red--text">{{ errorMessage }}</div>
+
                 <v-btn
                   type="submit"
                   class="mt-4"
@@ -61,7 +67,7 @@
                 >
                   {{ toggleMessage }}
                 </div>
-              </form>
+              </v-form>
             </v-card-text>
           </v-card>
         </v-flex>
@@ -88,19 +94,29 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
+
 const auth = getAuth();
 
 export default {
   name: "App",
   data() {
     return {
+      valid: true,
       email: "",
+      emailRules: [
+        (v) => !!v || "E-mail is required",
+        (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
+      ],
       password: "",
+      passwordRules: [
+        (v) => (v && v.length >= 8) || "Password must be more than 8 character"
+      ],
+      confirmPassword: "",
+      confirmPasswordRules: [(v) => !!v || "Password is required"],
       has_minimum_lenth: false,
       has_number: false,
       has_lowercsae: false,
       has_uppercase: false,
-      confirmPassword: "",
       registerMode: false,
       errorMessage: "",
       stateObj: {
@@ -116,7 +132,11 @@ export default {
     };
   },
   methods: {
+    validate() {
+      this.$refs.form.validate();
+    },
     login() {
+      this.validate();
       signInWithEmailAndPassword(auth, this.email, this.password)
         .then(() => {
           this.$router.replace({
@@ -139,61 +159,38 @@ export default {
         });
     },
     register() {
-      if (this.validateEmail()) {
-        if (this.validatePassword()) {
-          if (this.password == this.confirmPassword) {
-            createUserWithEmailAndPassword(auth, this.email, this.password)
-              .then(() => {
-                this.$router.replace({
-                  name: "dashboard",
-                  params: { email: this.email },
-                });
-                this.registerMode = false;
-                this.errorMessage = "";
-                this.$refs.form.reset();
-              })
-              .catch((error) => {
-                switch (error.code) {
-                  case "auth/email-already-in-use":
-                    this.errorMessage = "Email already in use";
-                    break;
-                  default:
-                    this.errorMessage = "Something go wrong";
-                    break;
-                }
-              });
-          } else {
-            this.errorMessage = "password did not match";
-          }
-        }
+      this.validate();
+      if (this.password == this.confirmPassword) {
+        createUserWithEmailAndPassword(auth, this.email, this.password)
+          .then(() => {
+            this.$router.replace({
+              name: "dashboard",
+              params: { email: this.email },
+            });
+            this.registerMode = false;
+            this.errorMessage = "";
+            this.$refs.form.reset();
+          })
+          .catch((error) => {
+            switch (error.code) {
+              case "auth/email-already-in-use":
+                this.errorMessage = "Email already in use";
+                break;
+              default:
+                this.errorMessage = "Something go wrong";
+                break;
+            }
+          });
       } else {
-        this.errorMessage = "Invalid email";
-      }
-    },
-    validateEmail() {
-      const blueprint =
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return blueprint.test(this.email);
-    },
-    validatePassword() {
-      if (this.password.length < 8) {
-        this.errorMessage = "password should containt at least 8 characters";
-        return false;
-      } else if (!/\d/.test(this.password)) {
-        this.errorMessage = "password should containt at least 1 number";
-        return false;
-      } else if (!/[a-z]/.test(this.password)) {
-        this.errorMessage = "password should containt at least 1 lowercase";
-        return false;
-      } else if (!/[A-Z]/.test(this.password)) {
-        this.errorMessage = "password should containt at lease 1 uppercase";
-        return false;
-      } else {
-        return true;
+        this.errorMessage = "password did not match";
       }
     },
   },
   computed: {
+    passwordConfirmationRule() {
+      return () =>
+        this.password === this.confirmPassword || "Password must match";
+    },
     toggleMessage: function () {
       return this.registerMode
         ? this.stateObj.register.message
