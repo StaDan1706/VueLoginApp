@@ -57,6 +57,7 @@
                   class="mt-4"
                   color="primary"
                   value="log in"
+                  :disabled="!valid"
                   >{{
                     registerMode ? stateObj.register.name : stateObj.login.name
                   }}</v-btn

@@ -14,7 +14,12 @@
               New Item
             </v-btn>
           </template>
-          <v-card>
+          <v-form
+            style="background: white"
+            ref="form"
+            @submit.prevent
+            v-model="valid"
+          >
             <v-card-title>
               <span class="text-h5">{{ formTitle }}</span>
             </v-card-title>
@@ -26,30 +31,35 @@
                     <v-text-field
                       v-model="editedItem.name"
                       label="Dessert name"
+                      :rules="nameRules"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       v-model="editedItem.calories"
                       label="Calories"
+                      :rules="valueRules"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       v-model="editedItem.fat"
                       label="Fat (g)"
+                      :rules="valueRules"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       v-model="editedItem.carbs"
                       label="Carbs (g)"
+                      :rules="valueRules"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       v-model="editedItem.protein"
                       label="Protein (g)"
+                      :rules="valueRules"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -59,9 +69,16 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="close"> Cancel </v-btn>
-              <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
+              <v-btn
+                :disabled="!valid"
+                color="blue darken-1"
+                text
+                @click="save"
+              >
+                Save
+              </v-btn>
             </v-card-actions>
-          </v-card>
+          </v-form>
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
@@ -95,7 +112,9 @@
 <script>
 export default {
   name: "DataTable",
+
   data: () => ({
+    valid: true,
     dialog: false,
     dialogDelete: false,
     headers: [
@@ -127,9 +146,17 @@ export default {
       carbs: 0,
       protein: 0,
     },
+    valueRules: [
+      (v) => /^[0-9,]*$/.test(v) || "Should contain only numbers",
+      (v) => !!v || "Value is required",
+    ],
+    nameRules: [(v) => !!v || "Product name is required"],
   }),
 
   methods: {
+    validate() {
+      this.$refs.form.validate();
+    },
     initialize() {
       this.desserts = [
         {
@@ -239,6 +266,7 @@ export default {
     },
 
     save() {
+      this.validate();
       if (this.editedIndex > -1) {
         Object.assign(this.desserts[this.editedIndex], this.editedItem);
       } else {
