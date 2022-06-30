@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-container>
     <v-app-bar color="primary" dark fixed app>
       <v-toolbar-title>Application</v-toolbar-title>
     </v-app-bar>
@@ -42,7 +42,7 @@
       </v-navigation-drawer>
       <DataTable />
     </v-container>
-  </v-app>
+  </v-container>
 </template>
 
 <script>

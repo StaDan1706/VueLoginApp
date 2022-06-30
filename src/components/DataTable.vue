@@ -129,25 +129,6 @@ export default {
     },
   }),
 
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "Edit Item";
-    },
-  },
-
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
-    },
-  },
-
-  created() {
-    this.initialize();
-  },
-
   methods: {
     initialize() {
       this.desserts = [
@@ -265,6 +246,25 @@ export default {
       }
       this.close();
     },
+  },
+
+  computed: {
+    formTitle() {
+      return this.editedIndex === -1 ? "New Item" : "Edit Item";
+    },
+  },
+
+  watch: {
+    dialog(val) {
+      val || this.close();
+    },
+    dialogDelete(val) {
+      val || this.closeDelete();
+    },
+  },
+
+  created() {
+    this.initialize();
   },
 };
 </script>
