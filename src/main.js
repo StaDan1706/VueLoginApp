@@ -2,12 +2,8 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import vuetify from "./plugins/vuetify";
-import VueCompositionAPI from "@vue/composition-api";
-import { initializeApp } from "firebase/app";
-import { createPinia, PiniaVuePlugin } from "pinia";
+import firebase from "firebase";
 
-Vue.use(PiniaVuePlugin);
-Vue.use(VueCompositionAPI);
 Vue.config.productionTip = false;
 
 const firebaseConfig = {
@@ -21,13 +17,11 @@ const firebaseConfig = {
   appId: "1:1021585384697:web:4e1ba27e35222731ceee28",
   measurementId: "G-6QTE54YV55",
 };
-initializeApp(firebaseConfig);
 
-const pinia = createPinia();
+firebase.initializeApp(firebaseConfig);
 
 new Vue({
   vuetify,
   router,
-  pinia,
   render: (h) => h(App),
 }).$mount("#app");

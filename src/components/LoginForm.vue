@@ -39,7 +39,11 @@
                 >
                 </v-text-field>
 
-                <RegisterForm :password="password" :email="email" v-if="registerMode" />
+                <RegisterForm
+                  :password="password"
+                  :email="email"
+                  v-if="registerMode"
+                />
 
                 <div class="red--text">{{ errorMessage }}</div>
 
@@ -70,10 +74,7 @@
 
 <script>
 import RegisterForm from "./RegisterForm.vue";
-import {
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-
+import firebase from "firebase";
 
 export default {
   name: "App",
@@ -113,7 +114,9 @@ export default {
     },
     login() {
       this.validate();
-      signInWithEmailAndPassword( this.email, this.password)
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(this.email, this.password)
         .then(() => {
           this.$router.replace({
             name: "dashboard",
@@ -133,7 +136,32 @@ export default {
               break;
           }
         });
-    }
+    },
+    register() {
+      this.validate();
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(this.email, this.password)
+        .then(() => {
+          this.$router.replace({
+            name: "dashboard",
+            params: { email: this.email },
+          });
+          this.registerMode = false;
+          this.errorMessage = "";
+          this.$refs.form.reset();
+        })
+        .catch((error) => {
+          switch (error.code) {
+            case "auth/email-already-in-use":
+              this.errorMessage = "Email already in use";
+              break;
+            default:
+              this.errorMessage = "Something go wrong";
+              break;
+          }
+        });
+    },
   },
   computed: {
     toggleMessage: function () {
