@@ -39,16 +39,7 @@
                 >
                 </v-text-field>
 
-                <v-text-field
-                  v-if="registerMode"
-                  v-model="confirmPassword"
-                  name="confirmPassword"
-                  label="Confirm Password"
-                  type="password"
-                  placeholder="cocnfirm password"
-                  :rules="confirmPasswordRules.concat(passwordConfirmationRule)"
-                >
-                </v-text-field>
+                <RegisterForm :password="password" v-if="registerMode" />
 
                 <div class="red--text">{{ errorMessage }}</div>
 
@@ -78,12 +69,16 @@
 </template>
 
 <script>
+import RegisterForm from "./RegisterForm.vue";
+
 import { initializeApp } from "firebase/app";
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_VUE_APP_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_VUE_APP_FIREBASE_PROJECT_ID + "firebaseapp.com",
+  authDomain:
+    import.meta.env.VITE_VUE_APP_FIREBASE_PROJECT_ID + "firebaseapp.com",
   projectId: import.meta.env.VITE_VUE_APP_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_VUE_APP_FIREBASE_PROJECT_ID + ".appspot.com",
+  storageBucket:
+    import.meta.env.VITE_VUE_APP_FIREBASE_PROJECT_ID + ".appspot.com",
   messagingSenderId: "1021585384697",
   appId: "1:1021585384697:web:4e1ba27e35222731ceee28",
   measurementId: "G-6QTE54YV55",
@@ -112,8 +107,6 @@ export default {
       passwordRules: [
         (v) => (v && v.length >= 8) || "Password must be more than 8 character",
       ],
-      confirmPassword: "",
-      confirmPasswordRules: [(v) => !!v || "Password is required"],
       has_minimum_lenth: false,
       has_number: false,
       has_lowercsae: false,
@@ -161,43 +154,37 @@ export default {
     },
     register() {
       this.validate();
-      if (this.password == this.confirmPassword) {
-        createUserWithEmailAndPassword(auth, this.email, this.password)
-          .then(() => {
-            this.$router.replace({
-              name: "dashboard",
-              params: { email: this.email },
-            });
-            this.registerMode = false;
-            this.errorMessage = "";
-            this.$refs.form.reset();
-          })
-          .catch((error) => {
-            switch (error.code) {
-              case "auth/email-already-in-use":
-                this.errorMessage = "Email already in use";
-                break;
-              default:
-                this.errorMessage = "Something go wrong";
-                break;
-            }
+      createUserWithEmailAndPassword(auth, this.email, this.password)
+        .then(() => {
+          this.$router.replace({
+            name: "dashboard",
+            params: { email: this.email },
           });
-      } else {
-        this.errorMessage = "password did not match";
-      }
+          this.registerMode = false;
+          this.errorMessage = "";
+          this.$refs.form.reset();
+        })
+        .catch((error) => {
+          switch (error.code) {
+            case "auth/email-already-in-use":
+              this.errorMessage = "Email already in use";
+              break;
+            default:
+              this.errorMessage = "Something go wrong";
+              break;
+          }
+        });
     },
   },
   computed: {
-    passwordConfirmationRule() {
-      return () =>
-        this.password === this.confirmPassword || "Password must match";
-    },
     toggleMessage: function () {
-
       return this.registerMode
         ? this.stateObj.register.message
         : this.stateObj.login.message;
     },
+  },
+  components: {
+    RegisterForm,
   },
 };
 </script>
