@@ -39,7 +39,7 @@
                 >
                 </v-text-field>
 
-                <RegisterForm :password="password" v-if="registerMode" />
+                <RegisterForm :password="password" :email="email" v-if="registerMode" />
 
                 <div class="red--text">{{ errorMessage }}</div>
 
@@ -70,28 +70,10 @@
 
 <script>
 import RegisterForm from "./RegisterForm.vue";
-
-import { initializeApp } from "firebase/app";
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_VUE_APP_FIREBASE_API_KEY,
-  authDomain:
-    import.meta.env.VITE_VUE_APP_FIREBASE_PROJECT_ID + "firebaseapp.com",
-  projectId: import.meta.env.VITE_VUE_APP_FIREBASE_PROJECT_ID,
-  storageBucket:
-    import.meta.env.VITE_VUE_APP_FIREBASE_PROJECT_ID + ".appspot.com",
-  messagingSenderId: "1021585384697",
-  appId: "1:1021585384697:web:4e1ba27e35222731ceee28",
-  measurementId: "G-6QTE54YV55",
-};
-
-initializeApp(firebaseConfig);
 import {
-  getAuth,
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 
-const auth = getAuth();
 
 export default {
   name: "App",
@@ -131,7 +113,7 @@ export default {
     },
     login() {
       this.validate();
-      signInWithEmailAndPassword(auth, this.email, this.password)
+      signInWithEmailAndPassword( this.email, this.password)
         .then(() => {
           this.$router.replace({
             name: "dashboard",
@@ -151,30 +133,7 @@ export default {
               break;
           }
         });
-    },
-    register() {
-      this.validate();
-      createUserWithEmailAndPassword(auth, this.email, this.password)
-        .then(() => {
-          this.$router.replace({
-            name: "dashboard",
-            params: { email: this.email },
-          });
-          this.registerMode = false;
-          this.errorMessage = "";
-          this.$refs.form.reset();
-        })
-        .catch((error) => {
-          switch (error.code) {
-            case "auth/email-already-in-use":
-              this.errorMessage = "Email already in use";
-              break;
-            default:
-              this.errorMessage = "Something go wrong";
-              break;
-          }
-        });
-    },
+    }
   },
   computed: {
     toggleMessage: function () {
