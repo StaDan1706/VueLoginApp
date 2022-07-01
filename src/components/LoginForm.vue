@@ -80,10 +80,10 @@
 <script>
 import { initializeApp } from "firebase/app";
 const firebaseConfig = {
-  apiKey: "AIzaSyCaJwoD86C7Ye5RhIAmUhbbf6cXLvIIIws",
-  authDomain: "vuelogin-a84f9.firebaseapp.com",
-  projectId: "vuelogin-a84f9",
-  storageBucket: "vuelogin-a84f9.appspot.com",
+  apiKey: import.meta.env.VITE_VUE_APP_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_VUE_APP_FIREBASE_PROJECT_ID + "firebaseapp.com",
+  projectId: import.meta.env.VITE_VUE_APP_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_VUE_APP_FIREBASE_PROJECT_ID + ".appspot.com",
   messagingSenderId: "1021585384697",
   appId: "1:1021585384697:web:4e1ba27e35222731ceee28",
   measurementId: "G-6QTE54YV55",
@@ -110,7 +110,7 @@ export default {
       ],
       password: "",
       passwordRules: [
-        (v) => (v && v.length >= 8) || "Password must be more than 8 character"
+        (v) => (v && v.length >= 8) || "Password must be more than 8 character",
       ],
       confirmPassword: "",
       confirmPasswordRules: [(v) => !!v || "Password is required"],
@@ -193,6 +193,7 @@ export default {
         this.password === this.confirmPassword || "Password must match";
     },
     toggleMessage: function () {
+
       return this.registerMode
         ? this.stateObj.register.message
         : this.stateObj.login.message;
