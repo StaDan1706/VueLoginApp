@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import vuetify from "./plugins/vuetify";
 import firebase from "firebase";
+import { createPinia } from "pinia";
 
 Vue.config.productionTip = false;
 
@@ -23,5 +24,6 @@ firebase.initializeApp(firebaseConfig);
 new Vue({
   vuetify,
   router,
+  createPinia,
   render: (h) => h(App),
 }).$mount("#app");

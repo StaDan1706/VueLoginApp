@@ -73,8 +73,11 @@
 </template>
 
 <script>
+import { useEmailStore } from "@/store/createCounter";
 import RegisterForm from "./RegisterForm.vue";
 import firebase from "firebase";
+
+const email = useEmailStore;
 
 export default {
   name: "App",
