@@ -6,6 +6,7 @@
     <v-container class="mt-15 d-flex flex-column flex-md-row">
       <v-navigation-drawer permanent>
         <v-list>
+          
           <v-list-item class="d-flex justify-center">
             <NavigationAvatar />
           </v-list-item>
@@ -13,6 +14,7 @@
           <v-list-item link>
             <NavigationHeader />
           </v-list-item>
+
         </v-list>
         <v-divider></v-divider>
       </v-navigation-drawer>

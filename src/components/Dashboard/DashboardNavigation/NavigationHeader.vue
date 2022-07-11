@@ -21,6 +21,7 @@ export default {
   methods: {
     logout() {
       this.$router.replace("/");
+      console.log(this.store.user.userEmail)
     },
   },
 };

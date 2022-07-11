@@ -3,10 +3,12 @@ import App from "./App.vue";
 import router from "./router";
 import vuetify from "./plugins/vuetify";
 import firebase from "firebase";
-import VueCompositionAPI from '@vue/composition-api'
+import VueCompositionAPI from "@vue/composition-api";
 import { createPinia, PiniaVuePlugin } from "pinia";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 Vue.use(PiniaVuePlugin);
 const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
 
 Vue.config.productionTip = false;
 
