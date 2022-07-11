@@ -11,14 +11,12 @@
           </v-list-item>
 
           <v-list-item link>
-            <NavigationHeader :email="email" />
+            <NavigationHeader />
           </v-list-item>
         </v-list>
-
         <v-divider></v-divider>
-
-        <DashboardContent :items="items" />
       </v-navigation-drawer>
+      <DashboardContent :items="items" />
       <DataTable />
     </v-container>
   </v-container>
@@ -34,7 +32,6 @@ export default {
   data() {
     return {
       items: [{ title: "Dashboard", icon: "mdi-view-dashboard" }],
-      email: this.$route.params.email,
     };
   },
   components: {

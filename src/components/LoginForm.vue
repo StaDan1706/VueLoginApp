@@ -73,14 +73,20 @@
 </template>
 
 <script>
-import { useEmailStore } from "@/store/createCounter";
 import RegisterForm from "./RegisterForm.vue";
-import firebase from "firebase";
-
-const email = useEmailStore;
+import firebase from "firebase/app";
+import { useUserStore } from "@/stores/user";
 
 export default {
   name: "App",
+  setup() {
+    const store = useUserStore();
+
+    return {
+      store,
+    };
+  },
+
   data() {
     return {
       valid: true,
@@ -121,6 +127,7 @@ export default {
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
         .then(() => {
+          this.store.getUserEmail(this.email);
           this.$router.replace({
             name: "dashboard",
             params: { email: this.email },
@@ -146,6 +153,7 @@ export default {
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
         .then(() => {
+          this.store.getUserEmail(this.email);
           this.$router.replace({
             name: "dashboard",
             params: { email: this.email },
