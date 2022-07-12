@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import RegisterForm from "./RegisterForm.vue";
+import RegisterForm from "@/components/RegisterForm.vue";
 import firebase from "firebase/app";
 import { useUserStore } from "@/stores/user";
 
