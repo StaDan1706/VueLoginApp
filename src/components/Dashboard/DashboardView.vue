@@ -25,8 +25,8 @@
 
 <script>
 import DataTable from "../DataTable.vue";
-import NavigationAvatar from "./DashboardNavigation/NavigationAvatar.vue";
-import NavigationHeader from "./DashboardNavigation/NavigationHeader.vue";
+import NavigationAvatar from "./DashboardAvatar.vue";
+import NavigationHeader from "./DashboardHeader.vue";
 
 export default {
   components: {

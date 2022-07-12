@@ -8,13 +8,13 @@ export const useUserStore = defineStore(
       userEmail: "",
     });
 
-    const getUserEmail = (newEmail) => {
+    const setUserEmail = (newEmail) => {
       user.value.userEmail = newEmail;
     };
 
     return {
       user,
-      getUserEmail,
+      setUserEmail,
     };
   },
   {

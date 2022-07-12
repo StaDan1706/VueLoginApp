@@ -127,7 +127,7 @@ export default {
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
         .then(() => {
-          this.store.getUserEmail(this.email);
+          this.store.setUserEmail(this.email);
           this.$router.replace({
             name: "dashboard",
             params: { email: this.email },
@@ -153,7 +153,7 @@ export default {
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
         .then(() => {
-          this.store.getUserEmail(this.email);
+          this.store.setUserEmail(this.email);
           this.$router.replace({
             name: "dashboard",
             params: { email: this.email },
