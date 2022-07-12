@@ -99,10 +99,6 @@ export default {
       passwordRules: [
         (v) => (v && v.length >= 8) || "Password must be more than 8 character",
       ],
-      has_minimum_lenth: false,
-      has_number: false,
-      has_lowercsae: false,
-      has_uppercase: false,
       registerMode: false,
       errorMessage: "",
       stateObj: {
