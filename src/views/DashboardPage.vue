@@ -2,7 +2,7 @@
   <v-container>
     <AppHeader />
 
-    <DashboardUnauthorized v-if="store.user.userEmail == ''" />
+    <DashboardUnauthorized v-if="store.user == null" />
 
     <v-container v-else class="mt-15 d-flex flex-column">
       <v-container>

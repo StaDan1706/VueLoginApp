@@ -1,9 +1,9 @@
 <template>
   <v-list-item-content>
     <v-list-item-title class="text-h6">
-      {{ store.user.userEmail }}
+      {{ store.user }}
     </v-list-item-title>
-    <v-list-item-subtitle v-on:click="logout">log out</v-list-item-subtitle>
+    <v-list-item-subtitle v-on:click="store.logout">log out</v-list-item-subtitle>
   </v-list-item-content>
 </template>
 
@@ -17,13 +17,6 @@ export default {
     return {
       store,
     };
-  },
-  methods: {
-    logout() {
-      this.$router.replace("/");
-       this.store.setUserEmail("");
-      console.log(this.store.user.userEmail)
-    },
-  },
+  }
 };
 </script>
