@@ -45,7 +45,7 @@
                   v-if="registerMode"
                 />
 
-                <div class="red--text">{{ errorMessage }}</div>
+                <div class="red--text">{{ store.errorMessage }}</div>
 
                 <v-btn
                   type="submit"
@@ -74,7 +74,6 @@
 
 <script>
 import RegisterForm from "@/components/RegisterForm.vue";
-import firebase from "firebase/app";
 import { useUserStore } from "@/stores/user";
 
 export default {
@@ -100,7 +99,6 @@ export default {
         (v) => (v && v.length >= 8) || "Password must be more than 8 character",
       ],
       registerMode: false,
-      errorMessage: "",
       stateObj: {
         register: {
           name: "Register",
@@ -119,55 +117,11 @@ export default {
     },
     login() {
       this.validate();
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(this.email, this.password)
-        .then(() => {
-          this.store.setUserEmail(this.email);
-          this.$router.replace({
-            name: "dashboard",
-            params: { email: this.email },
-          });
-        })
-        .catch((error) => {
-          switch (error.code) {
-            case "auth/invalid-email":
-              this.errorMessage = "Invalid email";
-              break;
-            case "auth/wrong-password":
-              this.errorMessage = "Incorrect password";
-              break;
-            default:
-              this.errorMessage = "Email or password was incorrect";
-              break;
-          }
-        });
+      this.store.login(this.email, this.password);
     },
     register() {
       this.validate();
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(this.email, this.password)
-        .then(() => {
-          this.store.setUserEmail(this.email);
-          this.$router.replace({
-            name: "dashboard",
-            params: { email: this.email },
-          });
-          this.registerMode = false;
-          this.errorMessage = "";
-          this.$refs.form.reset();
-        })
-        .catch((error) => {
-          switch (error.code) {
-            case "auth/email-already-in-use":
-              this.errorMessage = "Email already in use";
-              break;
-            default:
-              this.errorMessage = "Something go wrong";
-              break;
-          }
-        });
+      this.store.register(this.email, this.password);
     },
   },
   computed: {
