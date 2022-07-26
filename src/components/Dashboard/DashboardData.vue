@@ -147,7 +147,9 @@ export default {
       protein: 0,
     },
     valueRules: [
-      (v) => /^[0-9,.]*$/.test(v) || "Should contain only numbers",
+      (v) =>
+        /^(\d*\.?\d+|\d{1,3}(,\d{3})*(\.\d+)?)$/.test(v) ||
+        "Should contain only numbers",
     ],
     nameRules: [(v) => !!v || "Product name is required"],
   }),

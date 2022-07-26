@@ -40,9 +40,9 @@
                 </v-text-field>
 
                 <RegisterForm
+                  v-if="registerMode"
                   :password="password"
                   :email="email"
-                  v-if="registerMode"
                 />
 
                 <div class="red--text">{{ store.errorMessage }}</div>
