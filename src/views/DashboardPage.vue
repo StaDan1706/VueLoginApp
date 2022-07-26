@@ -33,11 +33,9 @@ import DashboardUnauthorized from "@/components/Dashboard/DashboardUnauthorized.
 import AppHeader from "@/components/Appheader.vue";
 
 export default {
-  setup() {
-    const store = useUserStore();
-
+  data() {
     return {
-      store,
+      store: useUserStore(),
     };
   },
   components: {

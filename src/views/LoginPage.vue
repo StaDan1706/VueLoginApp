@@ -79,16 +79,10 @@ import { emailRules, passwordRules } from "@/validationRules";
 
 export default {
   name: "App",
-  setup() {
-    const store = useUserStore();
-
-    return {
-      store,
-    };
-  },
 
   data() {
     return {
+      store: useUserStore(),
       valid: true,
       email: "",
       emailRules,

@@ -3,7 +3,9 @@
     <v-list-item-title class="text-h6">
       {{ store.user }}
     </v-list-item-title>
-    <v-list-item-subtitle v-on:click="store.logout">log out</v-list-item-subtitle>
+    <v-list-item-subtitle v-on:click="store.logout"
+      >log out</v-list-item-subtitle
+    >
   </v-list-item-content>
 </template>
 
@@ -11,12 +13,10 @@
 import { useUserStore } from "@/stores/user";
 
 export default {
-  setup() {
-    const store = useUserStore();
-
+  data() {
     return {
-      store,
+      store: useUserStore(),
     };
-  }
+  },
 };
 </script>
