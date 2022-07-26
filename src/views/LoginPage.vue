@@ -75,6 +75,7 @@
 <script>
 import RegisterForm from "@/components/RegisterForm.vue";
 import { useUserStore } from "@/stores/user";
+import { emailRules, passwordRules } from "@/validationRules";
 
 export default {
   name: "App",
@@ -90,14 +91,9 @@ export default {
     return {
       valid: true,
       email: "",
-      emailRules: [
-        (v) => !!v || "E-mail is required",
-        (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
-      ],
+      emailRules,
       password: "",
-      passwordRules: [
-        (v) => (v && v.length >= 8) || "Password must be more than 8 character",
-      ],
+      passwordRules,
       registerMode: false,
       stateObj: {
         register: {

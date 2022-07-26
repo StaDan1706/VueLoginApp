@@ -110,7 +110,9 @@
 </template>
 
 <script>
+import { valueRules, nameRules } from '@/validationRules';
 export default {
+
   name: "DataTable",
 
   data: () => ({
@@ -146,12 +148,8 @@ export default {
       carbs: 0,
       protein: 0,
     },
-    valueRules: [
-      (v) =>
-        /^(\d*\.?\d+|\d{1,3}(,\d{3})*(\.\d+)?)$/.test(v) ||
-        "Should contain only numbers",
-    ],
-    nameRules: [(v) => !!v || "Product name is required"],
+    valueRules,
+    nameRules
   }),
 
   methods: {

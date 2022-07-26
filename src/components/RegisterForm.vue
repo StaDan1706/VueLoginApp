@@ -11,13 +11,14 @@
 </template>
 
 <script>
+import { confirmPasswordRules } from "@/validationRules";
 export default {
   name: "RegisterForm",
-  props: ["password", "email"],
+  props: ["password"],
   data() {
     return {
       confirmPassword: "",
-      confirmPasswordRules: [(v) => !!v || "Password is required"],
+      confirmPasswordRules,
     };
   },
   computed: {
